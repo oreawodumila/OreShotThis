@@ -75,16 +75,16 @@ if (addressInput) {
   addressInput.addEventListener('blur', () => {
     const val = addressInput.value.trim();
     if (val && !isInDFW(val)) {
-      addressError.hidden = false;
+      addressError.style.display = 'block';
       addressInput.classList.add('field-error');
     } else {
-      addressError.hidden = true;
+      addressError.style.display = 'none';
       addressInput.classList.remove('field-error');
     }
   });
   addressInput.addEventListener('input', () => {
     if (isInDFW(addressInput.value)) {
-      addressError.hidden = true;
+      addressError.style.display = 'none';
       addressInput.classList.remove('field-error');
     }
   });
@@ -101,7 +101,7 @@ if (form) {
     e.preventDefault();
 
     if (addressInput && !isInDFW(addressInput.value.trim())) {
-      addressError.hidden = false;
+      addressError.style.display = 'block';
       addressInput.classList.add('field-error');
       addressInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
       return;
