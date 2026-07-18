@@ -60,12 +60,16 @@ if (form) {
         headers: { 'Accept': 'application/json' }
       });
 
-      if (res.ok) {
+      let json = null;
+      try { json = await res.json(); } catch {}
+
+      const hasErrors = json?.errors?.length > 0;
+
+      if (!hasErrors && res.status < 500) {
         form.hidden = true;
         success.hidden = false;
       } else {
-        const json = await res.json().catch(() => ({}));
-        const msg  = json.errors?.map(e => e.message).join(', ') || 'Something went wrong. Please try again or email me directly.';
+        const msg = json?.errors?.map(e => e.message).join(', ') || 'Something went wrong. Please try again.';
         showFormError(msg);
         resetBtn();
       }
