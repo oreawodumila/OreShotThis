@@ -19,8 +19,8 @@
 }
 
 /* ===== RESET ===== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; font-size: 16px; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; font-size: 16px; overflow-x: hidden; }
 body {
   background: var(--bg);
   color: var(--text);
@@ -654,7 +654,7 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); }
 }
 
 @media (max-width: 768px) {
-  .section { padding: 72px 0; }
+  .section { padding: 60px 0; }
   #navbar { padding: 18px 20px; }
   #navbar.scrolled { padding: 14px 20px; }
 
@@ -674,28 +674,44 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); }
     z-index: 99;
   }
   .nav-links.open { right: 0; }
-  .nav-links a { font-size: 1.1rem; }
+  .nav-links a { font-size: 1.1rem; padding: 8px 0; }
 
-  .hero-title { font-size: clamp(3rem, 12vw, 5rem); }
+  .logo-img { height: 36px; }
+
+  .hero-title { font-size: clamp(2.8rem, 11vw, 5rem); }
+  .hero-scroll-hint { display: none; }
 
   .services-grid { grid-template-columns: 1fr; }
-  .portfolio-grid {
-    grid-template-columns: repeat(2, 1fr);
-    grid-auto-rows: 180px;
-  }
-  .portfolio-grid .portfolio-item:nth-child(2) { grid-row: span 1; }
-
 
   .testimonials-grid { grid-template-columns: 1fr; }
 
-  .contact-info { display: block; }
+  .contact-info { display: flex; flex-direction: column; }
   .contact-form-wrap { padding: 28px 22px; }
   .form-row { grid-template-columns: 1fr; }
+
+  /* Prevent iOS auto-zoom on input focus */
+  .form-group input,
+  .form-group select,
+  .form-group textarea { font-size: 16px; }
+
+  .btn { min-height: 48px; }
 }
 
 @media (max-width: 480px) {
-  .portfolio-grid { grid-template-columns: 1fr; }
+  .section { padding: 48px 0; }
+  .container { padding: 0 18px; }
+  .logo-img { height: 32px; }
   .about-stats { gap: 24px; }
   .hero-actions { flex-direction: column; align-items: stretch; }
   .hero-actions .btn { text-align: center; }
+  .contact-form-wrap { padding: 24px 16px; }
+  .footer-links { gap: 20px; }
+}
+
+/* Respect reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .hero-orb { animation: none; }
+  .marquee-track { animation-duration: 60s; }
+  .reveal { transition-duration: 0.15s; }
+  .scroll-line { animation: none; }
 }
