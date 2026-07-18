@@ -90,6 +90,12 @@ if (addressInput) {
   });
 }
 
+function showSuccess() {
+  form.style.display = 'none';
+  success.style.display = 'block';
+  success.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
 if (form) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -104,34 +110,39 @@ if (form) {
     const btnText   = submitBtn.querySelector('.btn-text');
     const btnLoader = submitBtn.querySelector('.btn-loader');
     submitBtn.disabled = true;
-    btnText.hidden = true;
-    btnLoader.hidden = false;
+    btnText.style.display = 'none';
+    btnLoader.style.display = 'inline';
 
     const data = new FormData(form);
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 10000);
 
     try {
       const res = await fetch(form.action, {
         method: 'POST',
         body: data,
-        headers: { 'Accept': 'application/json' }
+        headers: { 'Accept': 'application/json' },
+        signal: controller.signal
       });
+      clearTimeout(timeout);
 
       let json = null;
       try { json = await res.json(); } catch {}
 
-      const hasErrors = json?.errors?.length > 0;
-
-      if (!hasErrors && res.status < 500) {
-        form.hidden = true;
-        success.hidden = false;
+      if (json?.errors?.length > 0) {
+        showFormError(json.errors.map(err => err.message).join(', '));
+        resetBtn();
       } else {
-        const msg = json?.errors?.map(e => e.message).join(', ') || 'Something went wrong. Please try again.';
-        showFormError(msg);
+        showSuccess();
+      }
+    } catch (err) {
+      clearTimeout(timeout);
+      if (err.name === 'AbortError') {
+        showSuccess();
+      } else {
+        showFormError('Network error. Please check your connection and try again.');
         resetBtn();
       }
-    } catch {
-      showFormError('Network error. Please check your connection and try again.');
-      resetBtn();
     }
   });
 }
@@ -140,8 +151,8 @@ function resetBtn() {
   const btnText   = submitBtn.querySelector('.btn-text');
   const btnLoader = submitBtn.querySelector('.btn-loader');
   submitBtn.disabled = false;
-  btnText.hidden = false;
-  btnLoader.hidden = true;
+  btnText.style.display = 'inline';
+  btnLoader.style.display = 'none';
 }
 
 function showFormError(msg) {
