@@ -36,14 +36,70 @@ document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 const yearEl = document.getElementById('year');
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
+/* ===== DFW VALIDATION ===== */
+const DFW_CITIES = [
+  'dallas','fort worth','arlington','plano','garland','irving','grand prairie',
+  'mesquite','frisco','mckinney','denton','carrollton','richardson','lewisville',
+  'allen','flower mound','rowlett','north richland hills','mansfield','euless',
+  'cedar hill','wylie','haltom city','bedford','keller','hurst','duncanville',
+  'desoto','grapevine','waxahachie','rockwall','forney','weatherford','burleson',
+  'cleburne','azle','saginaw','watauga','colleyville','southlake','coppell',
+  'farmers branch','addison','universitypark','highland park','lancaster',
+  'balch springs','sachse','murphy','sunnyvale','seagoville','hutchins',
+  'wilmer','midlothian','ennis','kaufman','terrell','fate','royse city',
+  'melissa','prosper','celina','little elm','the colony','corinth','lake dallas',
+  'argyle','justin','roanoke','trophy club','westlake','collinsville','anna',
+  'van alstyne','gunter','sherman', 'gainesville','decatur','mineral wells'
+];
+
+const DFW_COUNTIES = [
+  'dallas county','tarrant county','collin county','denton county',
+  'rockwall county','kaufman county','ellis county','johnson county',
+  'parker county','wise county','hood county','hunt county'
+];
+
+function isInDFW(address) {
+  const lower = address.toLowerCase();
+  return DFW_CITIES.some(c => lower.includes(c)) ||
+         DFW_COUNTIES.some(c => lower.includes(c));
+}
+
 /* ===== BOOKING FORM ===== */
 const form      = document.getElementById('bookingForm');
 const success   = document.getElementById('formSuccess');
 const submitBtn = document.getElementById('submitBtn');
+const addressInput = document.getElementById('address');
+const addressError = document.getElementById('addressError');
+
+if (addressInput) {
+  addressInput.addEventListener('blur', () => {
+    const val = addressInput.value.trim();
+    if (val && !isInDFW(val)) {
+      addressError.hidden = false;
+      addressInput.classList.add('field-error');
+    } else {
+      addressError.hidden = true;
+      addressInput.classList.remove('field-error');
+    }
+  });
+  addressInput.addEventListener('input', () => {
+    if (isInDFW(addressInput.value)) {
+      addressError.hidden = true;
+      addressInput.classList.remove('field-error');
+    }
+  });
+}
 
 if (form) {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    if (addressInput && !isInDFW(addressInput.value.trim())) {
+      addressError.hidden = false;
+      addressInput.classList.add('field-error');
+      addressInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
 
     const btnText   = submitBtn.querySelector('.btn-text');
     const btnLoader = submitBtn.querySelector('.btn-loader');

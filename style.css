@@ -549,6 +549,8 @@ input, select, textarea, button { font-family: inherit; }
 .form-group input::placeholder,
 .form-group textarea::placeholder { color: var(--text-dim); }
 .form-group textarea { resize: vertical; min-height: 130px; }
+.field-error-msg { font-size: 0.8rem; color: #e05555; margin-top: 4px; display: block; }
+.form-group input.field-error { border-color: #e05555; box-shadow: 0 0 0 3px rgba(224,85,85,0.15); }
 input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.5); }
 
 .form-success {
